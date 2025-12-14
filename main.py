@@ -31,7 +31,7 @@ def get_book(book_id: int):
         raise HTTPException(status_code=404, detail="Book not found") # 回傳 404 錯誤
     return book # 回傳書籍詳情 
 
-@app.post("/books", response_model=models.BookResponse, status_code=status.HTTP_201_CREATED) # 指定回傳型別為單一書籍，並設定狀態碼為 201 Created
+@app.post("/books", response_model=models.BookResponse, status_code=201) # 指定回傳型別為單一書籍，並設定狀態碼為 201 Created
 def create_book(book: models.BookCreate):
     """
     新增一本書籍。
@@ -42,8 +42,8 @@ def create_book(book: models.BookCreate):
         book.title, book.author, book.publisher,
         book.price, book.publish_date, book.isbn, book.cover_url
     )
-    # 檢查是否成功建立
-    if new_id == -1:
+    # 檢查是否成功新增
+    if new_id == -1:# 假設 -1 代表新增失敗
         raise HTTPException(status_code=400, detail="Create book failed. Check required fields.")
 
     new_book = database.get_book_by_id(new_id)
@@ -67,7 +67,7 @@ def update_book(book_id: int, book: models.BookCreate):
     updated_book = database.get_book_by_id(book_id)
     return updated_book
 
-@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT) # 設定狀態碼為 204 No Content
+@app.delete("/books/{book_id}", status_code=204) # 設定狀態碼為 204 No Content
 def delete_book(book_id: int):
     """
     刪除書籍。
